@@ -1,0 +1,54 @@
+- Laravel 10 + Sanctum (token auth) > Retorno em JSON
+    - Colocar Redis como cache para Sanctum
+- BD MySQL
+- Rotas Públicas e Privadas
+    - Route::middleware('auth:sanctum')
+    - Rotas públicas com: rate limit, HTTPS, API Key pública (validada no middleware)
+    - Rate limit: ->middleware('throttle:60,1')
+    - Sanctun (Token):
+        - Token não expira automaticamente
+        - App salva token em Secure Storage
+        - Se API retornar 401:
+            - Limpa token
+            - Redireciona para login
+        - Limpa token no logout
+        - Toda vez que usuário fizer login: Delete tokens antigos E Gere um novo
+- Cache
+    - SESSION_DRIVER=file
+    - CACHE_DRIVER=file
+    - QUEUE_CONNECTION=database
+        - php artisan queue:table
+        - php artisan migrate
+- Login social
+    - App → Google
+    - App ← Google (id_token)
+    - App → Laravel API (envia id_token)
+    - Laravel valida com Google
+    - Laravel cria / encontra usuário
+    - Laravel gera token Sanctum
+    - Laravel → App (retorna token próprio)
+    - No Flutter: google_sign_in
+    - Validar token Google: https://oauth2.googleapis.com/tokeninfo?id_token=SEU_TOKEN
+    - FLUXO:
+        - App autentica com provedor
+        - App recebe id_token / access_token
+        - App envia token para sua API
+        - API valida com o provedor
+        - API cria/encontra usuário
+        - API gera token Sanctum
+    - Mas não confie cegamente no email
+        - Validar o token com o provedor
+        - Pegar o provider_id (sub no Google, id no Facebook)
+        - Verificar se já existe usuário com: aquele provider_id OU aquele email
+    - Possível estrutura:
+        - users
+            - id
+            - name
+            - email (unique)
+            - password (nullable)
+            - email_verified_at (nullable)
+        - social_accounts
+            - id
+            - user_id
+            - provider (google | facebook)
+            - provider_id
