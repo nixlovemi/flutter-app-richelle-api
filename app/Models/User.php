@@ -45,4 +45,14 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // relations
+    public function socials()
+    {
+        return $this->hasMany(
+            UserSocials::class, 'user_id',
+            'id'
+        );
+    }
+    // =========
 }
