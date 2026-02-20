@@ -65,10 +65,29 @@ return [
     'url' => 'The :attribute format is invalid.',
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'email' => [
+            'required_without' => 'The email field is required when not using social login.',
+        ],
+        'password' => [
+            'required_with' => 'The password field is required when using email login.',
+        ],
+        'provider' => [
+            'required_without' => 'The provider field is required when not using email login.',
+            'in' => 'The selected provider is invalid. Available providers: :values',
+        ],
+        'provider_id' => [
+            'required_with' => 'The provider ID field is required when using social login.',
+        ],
+        'provider_token' => [
+            'required_with' => 'The provider token field is required when using social login.',
         ],
     ],
 
-    'attributes' => [],
+    'attributes' => [
+        'email' => 'email address',
+        'password' => 'password',
+        'provider' => 'social provider',
+        'provider_id' => 'provider ID',
+        'provider_token' => 'provider token',
+    ],
 ];

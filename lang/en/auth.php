@@ -19,4 +19,22 @@ return [
     'verification_link_sent' => 'A fresh verification link has been sent to your email address.',
     'check_email' => 'Before proceeding, please check your email for a verification link.',
     'click_to_request_another' => 'If you did not receive the email, click here to request another.',
+
+    // API Authentication Messages
+    'invalid_login_method' => 'Invalid login method provided',
+    'invalid_credentials' => 'Invalid credentials',
+    'authentication_failed' => 'Authentication failed - user not found',
+    'login_success_email' => 'Login successful with email/password',
+    'invalid_provider_token' => 'Invalid provider token',
+    'token_validation_failed' => 'Token validation failed with :provider',
+    'provider_id_mismatch' => 'Provider ID mismatch',
+    'provider_id_no_match' => 'Provider ID does not match token',
+    'user_creation_failed' => 'Failed to create or find user',
+    'login_success_provider' => 'Login successful with :provider',
+    'logout_success' => 'Logged out successfully',
+    'no_authenticated_user' => 'No authenticated user found',
+    'logout_all_success' => 'Logged out from all devices successfully',
+    'token_invalid' => 'Token invalid or expired',
+    'user_info_retrieved' => 'User information retrieved',
+    'invalid_api_key' => 'Invalid or missing API key',
 ];

@@ -19,4 +19,22 @@ return [
     'verification_link_sent' => 'Um novo link de verificação foi enviado para seu endereço de e-mail.',
     'check_email' => 'Antes de prosseguir, verifique seu e-mail para um link de verificação.',
     'click_to_request_another' => 'Se você não recebeu o e-mail, clique aqui para solicitar outro.',
+
+    // API Authentication Messages
+    'invalid_login_method' => 'Método de login inválido fornecido',
+    'invalid_credentials' => 'Credenciais inválidas',
+    'authentication_failed' => 'Falha na autenticação - usuário não encontrado',
+    'login_success_email' => 'Login realizado com sucesso com e-mail/senha',
+    'invalid_provider_token' => 'Token do provedor inválido',
+    'token_validation_failed' => 'Falha na validação do token com :provider',
+    'provider_id_mismatch' => 'Incompatibilidade de ID do provedor',
+    'provider_id_no_match' => 'ID do provedor não corresponde ao token',
+    'user_creation_failed' => 'Falha ao criar ou encontrar usuário',
+    'login_success_provider' => 'Login realizado com sucesso com :provider',
+    'logout_success' => 'Logout realizado com sucesso',
+    'no_authenticated_user' => 'Nenhum usuário autenticado encontrado',
+    'logout_all_success' => 'Logout realizado com sucesso de todos os dispositivos',
+    'token_invalid' => 'Token inválido ou expirado',
+    'user_info_retrieved' => 'Informações do usuário recuperadas',
+    'invalid_api_key' => 'Chave de API inválida ou ausente',
 ];

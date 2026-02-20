@@ -65,8 +65,21 @@ return [
     'url' => 'O formato do campo :attribute é inválido.',
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'mensagem-personalizada',
+        'email' => [
+            'required_without' => 'O campo e-mail é obrigatório quando não se está usando login social.',
+        ],
+        'password' => [
+            'required_with' => 'O campo senha é obrigatório quando se está usando login por e-mail.',
+        ],
+        'provider' => [
+            'required_without' => 'O campo provedor é obrigatório quando não se está usando login por e-mail.',
+            'in' => 'O provedor selecionado é inválido. Provedores disponíveis: :values',
+        ],
+        'provider_id' => [
+            'required_with' => 'O campo ID do provedor é obrigatório quando se está usando login social.',
+        ],
+        'provider_token' => [
+            'required_with' => 'O campo token do provedor é obrigatório quando se está usando login social.',
         ],
     ],
 
@@ -84,5 +97,8 @@ return [
         'birth_date' => 'data de nascimento',
         'created_at' => 'criado em',
         'updated_at' => 'atualizado em',
+        'provider' => 'provedor social',
+        'provider_id' => 'ID do provedor',
+        'provider_token' => 'token do provedor',
     ],
 ];

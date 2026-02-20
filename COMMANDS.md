@@ -5,4 +5,5 @@
     - php artisan make:model Employee -mfsc (model/factory/seeder/controller)
     - php artisan key:generate (csrf token)
     - php artisan storage:link --relative
+    - php artisan test tests/Feature/AuthControllerTest.php
     - php artisan config:clear; php artisan cache:clear; composer dump-autoload; php artisan view:clear; php artisan route:clear
