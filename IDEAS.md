@@ -14,11 +14,11 @@
         - Limpa token no logout
         - Toda vez que usuário fizer login: Delete tokens antigos E Gere um novo
 - Cache
-    - SESSION_DRIVER=file
-    - CACHE_DRIVER=file
-    - QUEUE_CONNECTION=database
-        - php artisan queue:table
-        - php artisan migrate
+    - SESSION_DRIVER=file ✓
+    - CACHE_DRIVER=file ✓
+    - QUEUE_CONNECTION=database ✓
+        - php artisan queue:table ✓
+        - php artisan migrate ✓
 - Login social
     - App → Google
     - App ← Google (id_token)

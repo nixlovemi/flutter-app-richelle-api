@@ -1,0 +1,8 @@
+- LARAVEL
+    - php artisan migrate:fresh --seed --database=pgsql_test
+    - php artisan make:component Alert --inline
+    - php artisan make:mail OrderShipped
+    - php artisan make:model Employee -mfsc (model/factory/seeder/controller)
+    - php artisan key:generate (csrf token)
+    - php artisan storage:link --relative
+    - php artisan config:clear; php artisan cache:clear; composer dump-autoload; php artisan view:clear; php artisan route:clear

@@ -1,0 +1,30 @@
+[2026-02-20 02:55:51] local.ERROR: Command "migrate:seed" is not defined.
+
+Did you mean one of these?
+    db:seed
+    make:seeder
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"migrate:seed\" is not defined.
+
+Did you mean one of these?
+    db:seed
+    make:seeder
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status at C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('migrate:seed')
+#1 C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/artisan(37): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 {main}
+"} 
