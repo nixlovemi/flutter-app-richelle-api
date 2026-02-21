@@ -17,9 +17,16 @@ return [
     'confirm_delete' => 'Are you sure you want to delete this item?',
     'created_at' => 'Created at',
     'updated_at' => 'Updated at',
+    'updated_success' => ':attribute updated successfully!',
 
     'social' => [
         'facebook' => 'Facebook',
         'google' => 'Google',
+    ],
+
+    'models' => [
+        'user' => [
+            'name' => 'User',
+        ],
     ],
 ];

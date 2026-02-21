@@ -17,9 +17,16 @@ return [
     'confirm_delete' => 'Tem certeza de que deseja excluir este item?',
     'created_at' => 'Criado em',
     'updated_at' => 'Atualizado em',
+    'updated_success' => ':attribute atualizado com sucesso!',
 
     'social' => [
         'facebook' => 'Facebook',
         'google' => 'Google',
+    ],
+
+    'models' => [
+        'user' => [
+            'name' => 'Usuário',
+        ],
     ],
 ];
