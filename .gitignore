@@ -23,7 +23,7 @@ Homestead.json
 .phpunit.result.cache
 
 # Storage directories - ignore all contents
-storage/logs/
+storage/logs/*
 storage/framework/
 
 /public/build

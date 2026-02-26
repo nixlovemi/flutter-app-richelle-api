@@ -1,0 +1,318 @@
+type: collection.insomnia.rest/5.0
+name: TimelessApi
+meta:
+  id: wrk_c84bcb780fa34f21aa4f09b4ec5056dc
+  created: 1771559439836
+  modified: 1771559439836
+collection:
+  - name: auth
+    meta:
+      id: fld_f92dc2b79fae4c76be5a14551c91cef5
+      created: 1771559515464
+      modified: 1772138724686
+      sortKey: -1771644476113
+    children:
+      - url: "{{ _.api_url }}/api/v1/auth/login"
+        name: login
+        meta:
+          id: req_fc0a1fd61b6649c596b46f72f0284c94
+          created: 1771559728334
+          modified: 1772138532493
+          isPrivate: false
+          sortKey: -1771559728334
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "admin@example.com",
+            	"password": "Mudar123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_06055996ff1647cebf499b0b083347cc
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+        scripts:
+          afterResponse: |-
+            // Access the JSON response body
+            const jsonBody = insomnia.response.json();
+
+            // Check if the status code is as expected
+            insomnia.test('Check if status is 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+
+            // Set an environment variable with a value from the response body
+            if (insomnia.response.code == 200) {
+              const tokenValue = jsonBody.body.token.split('|')[1];
+            	let timelessApi = insomnia.environment.get("timeless_api") || {};
+            	
+            	timelessApi.auth_token = tokenValue;
+              insomnia.environment.set("timeless_api", timelessApi);
+            }
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.api_url }}/api/v1/auth/me"
+        name: me
+        meta:
+          id: req_e4603e9e208345adb13e75464e8df64d
+          created: 1771565254619
+          modified: 1771566867005
+          isPrivate: false
+          sortKey: -1760479468496
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+          - id: pair_af8ff1aa1cef4a6da129aa73585637ed
+            name: Accept
+            value: application/json
+            disabled: false
+          - id: pair_dcbff4b5913c489ba8a52256c675d5ba
+            name: Authorization
+            value: Bearer {{ _.timeless_api.auth_token }}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.api_url }}/api/v1/auth/logout"
+        name: logout
+        meta:
+          id: req_ef29039d62bc463d955df9668f7692c7
+          created: 1771567039730
+          modified: 1771567071652
+          isPrivate: false
+          sortKey: -1754939338577
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+          - id: pair_af8ff1aa1cef4a6da129aa73585637ed
+            name: Accept
+            value: application/json
+            disabled: false
+          - id: pair_dcbff4b5913c489ba8a52256c675d5ba
+            name: Authorization
+            value: Bearer {{ _.timeless_api.auth_token }}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.api_url }}/api/v1/auth/logout-all"
+        name: logoutAll
+        meta:
+          id: req_7d312b95596241f6939d4001ca149bce
+          created: 1771567102456
+          modified: 1771567113120
+          isPrivate: false
+          sortKey: -1752169273617.5
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+          - id: pair_af8ff1aa1cef4a6da129aa73585637ed
+            name: Accept
+            value: application/json
+            disabled: false
+          - id: pair_dcbff4b5913c489ba8a52256c675d5ba
+            name: Authorization
+            value: Bearer {{ _.timeless_api.auth_token }}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.api_url }}/api/v1/auth/login"
+        name: login-google
+        meta:
+          id: req_77da0473368b49a2808a66a162a59da7
+          created: 1772136623543
+          modified: 1772138780794
+          isPrivate: false
+          sortKey: -1766019598415
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"provider": "google",
+            	"provider_id": "114673867976245121706",
+            	"provider_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQyNzU0MDdjMzllODAzNmFhNzM1ZWIyYzE3YzU0ODc2MWNlZDZhNjQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1MDQwMDg3MDI2OS0yajZvYzFqMWRjbTA4cml0NzFndXJmcGJydWhtc3NuZC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjUwNDAwODcwMjY5LWk1bTYza2hkaDZkZDQ0ZXZyaGJpMDIyaXUybzVhYTc4LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE0NjczODY3OTc2MjQ1MTIxNzA2IiwiZW1haWwiOiJuaXhsb3ZlbWlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJMZWFuZHJvIFBhcnJhIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0toQjZhdlZiWFZlb0Z0M1FXdHItaERJQTVtRkVvZUpDVFVHV1pOclgwb0o3Q3B5Yjl6aHc9czk2LWMiLCJnaXZlbl9uYW1lIjoiTGVhbmRybyIsImZhbWlseV9uYW1lIjoiUGFycmEiLCJpYXQiOjE3NzIxMzY1MzAsImV4cCI6MTc3MjE0MDEzMH0.l8aFzBJKs0U5NKfFnIqqij9f6dNO0rzgozHy3SlMg5iocb6ku76bsk22J_sHkSO71VfYX_AJ1hESVzEnUTxJdQUljEyZciyUsVcIivHgHf34eBGlwqWj-yneD9iP834gsrYyvqB5_WQH8TdfVaD4G3uWGLCXskuH7d1wJUToLaE7DF2KXRYGL-qtVx8dGPrLevs57WafDgxurpd1lcoRnv-9zi4m2XbsSqeGwsk8UMwReC02DxGYZvMy"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_06055996ff1647cebf499b0b083347cc
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+        scripts:
+          afterResponse: |-
+            // Access the JSON response body
+            const jsonBody = insomnia.response.json();
+
+            // Check if the status code is as expected
+            insomnia.test('Check if status is 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+
+            // Set an environment variable with a value from the response body
+            if (insomnia.response.code == 200) {
+              const tokenValue = jsonBody.body.token.split('|')[1];
+            	let timelessApi = insomnia.environment.get("timeless_api") || {};
+            	
+            	timelessApi.auth_token = tokenValue;
+              insomnia.environment.set("timeless_api", timelessApi);
+            }
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: user
+    meta:
+      id: fld_12b304ec23ce4b6e981cf3d745e2bd89
+      created: 1771644476013
+      modified: 1771644476013
+      sortKey: -1771644476013
+    children:
+      - url: "{{ _.api_url }}/api/v1/user/update-profile"
+        name: update-profile
+        meta:
+          id: req_fcb227822191433b9363487ac6345c32
+          created: 1771644489199
+          modified: 1771644558039
+          isPrivate: false
+          sortKey: -1771644494195
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"first_name": "Leandro",
+            	"last_name": "Parra"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_b581564de9d74697b5a89e7663680b92
+          - id: pair_6c8586d50254468cb97e0549f5eed203
+            name: API_KEY
+            value: "{{ _.timeless_api.api_key }}"
+            disabled: false
+          - id: pair_af8ff1aa1cef4a6da129aa73585637ed
+            name: Accept
+            value: application/json
+            disabled: false
+          - id: pair_dcbff4b5913c489ba8a52256c675d5ba
+            name: Authorization
+            value: Bearer {{ _.timeless_api.auth_token }}
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_76feb0f9b2824c699876d0b82c8e23a3
+    created: 1771559439840
+    modified: 1772138724683
+  cookies:
+    - id: 1348e98a-ae71-419e-897a-20f5f7487ac6
+      key: XSRF-TOKEN
+      value: eyJpdiI6IkU5b1ZUMEY5VjdJTGR2a1RjWnhWd1E9PSIsInZhbHVlIjoicGdtWThxNEFjdGluc0hFb0RDWXdYTkhNU1FZcXdYdFRET28zcFIyS2grWk5lMUsxQkp1cnJmbCtqa3lCVjk2OTdIWHduNHdTWjJZanJRcm94MWZwM2lqRUpORDMwMy9mUFF5QnFiQkJsbjB4Uk41RllYdkRWUytyMUN0NFEycXMiLCJtYWMiOiI0Mjc0YzA0MjFjM2ViODBkMTEwY2M0NmE5MmRjMmIzOWZlZThiY2QzMTRjZjJhN2I4YWQ2ODA1MWU1MDRjNjY4IiwidGFnIjoiIn0%3D
+      domain: 127.0.0.1
+      path: /
+      secure: false
+      httpOnly: false
+      creation: 2025-06-05T17:10:50.174Z
+      hostOnly: true
+      lastAccessed: 2026-02-20T04:55:03.249Z
+    - id: af41fcf0-7169-410c-8de7-10e426795cc8
+      key: pg_bodytracker_session
+      value: eyJpdiI6ImhBdkJMLysxUThUaVlyNVpLaDdZMEE9PSIsInZhbHVlIjoic2wwSmZyQnYxNktQak1wTWF3S0hKOU1PWXAvcDlPczlWVE8zWEVSY3Z3UEs2d2JZeWtYVDJ5OGVBa0ZyMjc0V0Q0N0wyK0tkSnZXOWJhUXByMVV1dTM5bHdQV3VGaGEzY3krcTdTaEhBS2F4ZnRTeGV1c2dKdFoySVpERHcwc1IiLCJtYWMiOiJlMWRjZjkwMmYwMThkZmEzMzgwOGU1ODViMWE0MDhlZjdlMjA2YmEwZWU2ZWNjM2RkN2FhNzY5Y2YxNDdmN2Q5IiwidGFnIjoiIn0%3D
+      domain: 127.0.0.1
+      path: /
+      secure: false
+      httpOnly: true
+      creation: 2025-06-05T17:10:50.176Z
+      hostOnly: true
+      lastAccessed: 2025-06-11T20:57:24.262Z
+    - id: 029a702d-6999-4b90-89c5-4ae9d1dbfb2e
+      key: timelessapi_session
+      value: eyJpdiI6Im9XanczaVVQVHU5YWZkUWRsMk9yS0E9PSIsInZhbHVlIjoiTEtOUjE1NkJZRmQweGFXWElRWlh2UWFUT3FlTjlVSnhHcUZwQVRZRDI4Q2NGSFFkUVFPRlA5M282YThFNWo5aDJhUERzNU52ekFVd2tXbE56ME1kR3ZvYUFSODRsaFhycUxIVlgra2hxMGJiMVpYREovTTIxNWpvTUhVajVkdWoiLCJtYWMiOiJmYjZlOTRkOTYzZTc4YzBmODZhOTRiZDQwODc2MzU4MDdkYzJjMWM5ZmUyYzkyNDgwMzkyNWNiODFmMmY5YjQxIiwidGFnIjoiIn0%3D
+      domain: 127.0.0.1
+      path: /
+      secure: false
+      httpOnly: true
+      creation: 2026-02-20T04:44:24.061Z
+      hostOnly: true
+      lastAccessed: 2026-02-20T04:55:03.249Z
+environments:
+  name: Base Environment
+  meta:
+    id: env_7bef8a2826394635a56cae4296699fb1
+    created: 1771559439838
+    modified: 1772138724685
+    isPrivate: false
+  data:
+    api_url: http://127.0.0.1:8000
+    timeless_api:
+      auth_token: mFmcKblLZ6DTb1jF1moJ1jOac5mC0Bow2pgwpKgB7136b94b
+      api_key: da39a3ee5e6b4b0d3255bfef95601890afd80709

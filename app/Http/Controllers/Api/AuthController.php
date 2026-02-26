@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Google_Client;
 
 class AuthController extends Controller
 {
@@ -61,7 +62,7 @@ class AuthController extends Controller
             __('auth.login_success_email'),
             [
                 'user' => $user->only([
-                    'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'created_at', 'updated_at'
+                    'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'avatar_url', 'created_at', 'updated_at'
                 ]),
                 'token' => $token,
                 'token_type' => 'sanctum',
@@ -113,7 +114,7 @@ class AuthController extends Controller
             __('auth.login_success_provider', ['provider' => ucfirst($provider)]),
             [
                 'user' => $user->only([
-                    'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'created_at', 'updated_at'
+                    'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'avatar_url', 'created_at', 'updated_at'
                 ]),
                 'token' => $token,
                 'token_type' => 'sanctum',
@@ -151,27 +152,32 @@ class AuthController extends Controller
      */
     private function validateGoogleToken(string $idToken): ?array
     {
-        $response = Http::get('https://oauth2.googleapis.com/tokeninfo', [
-            'id_token' => $idToken
+        $client = new Google_Client([
+            'client_id' => config('services.google.client_id')
         ]);
+        $payload = $client->verifyIdToken($idToken);
 
-        if (!$response->successful()) {
+        if (!$payload) {
             return null;
         }
-
-        $data = $response->json();
 
         // Validate token structure and required fields
-        if (!isset($data['sub'], $data['email'])) {
+        if (!isset($payload['sub'], $payload['email'])) {
             return null;
         }
 
+        // Optionally validate email is verified (recommended for production)
+        // if (!($payload['email_verified'] ?? false)) {
+        //     return null;
+        // }
+
         return [
-            'id' => $data['sub'],
-            'email' => $data['email'],
-            'name' => $data['name'] ?? null,
-            'first_name' => $data['given_name'] ?? null,
-            'last_name' => $data['family_name'] ?? null,
+            'id' => $payload['sub'],
+            'email' => $payload['email'],
+            'name' => $payload['name'] ?? null,
+            'first_name' => $payload['given_name'] ?? null,
+            'last_name' => $payload['family_name'] ?? null,
+            'picture' => $payload['picture'] ?? null,
         ];
     }
 
@@ -242,6 +248,11 @@ class AuthController extends Controller
                     ]);
                 }
 
+                // Update avatar if provided and user doesn't have one
+                if (!empty($providerData['picture']) && empty($existingUser->avatar_url)) {
+                    $existingUser->update(['avatar_url' => $providerData['picture']]);
+                }
+
                 return $existingUser;
             }
         }
@@ -257,6 +268,7 @@ class AuthController extends Controller
             'last_name' => $providerData['last_name'] ?? '',
             'email' => $providerData['email'],
             'email_verified_at' => now(), // Social login emails are considered verified
+            'avatar_url' => $providerData['picture'] ?? null,
         ]);
 
         // Create social account link
@@ -330,7 +342,7 @@ class AuthController extends Controller
 
         return ApiResponse::success(__('auth.user_info_retrieved'), [
             'user' => $user->only([
-                'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'created_at', 'updated_at'
+                'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'avatar_url', 'created_at', 'updated_at'
             ]),
             'social_providers' => $user->socials->map(function ($social) {
                 return $social->only(['provider', 'created_at']);
