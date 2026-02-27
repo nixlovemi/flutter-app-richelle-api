@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\UserProfileValidation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\CustomVerifyEmail;
+use Illuminate\Support\Facades\App;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, UserProfileValidation;
 
@@ -55,6 +57,15 @@ class User extends Authenticatable
             UserSocials::class, 'user_id',
             'id'
         );
+    }
+
+    /**
+     * Send the email verification notification with proper locale support.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $locale = App::getLocale();
+        $this->notify(new CustomVerifyEmail($locale));
     }
     // =========
 }

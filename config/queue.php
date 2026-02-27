@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Cron Token for Shared Hosting
+    |--------------------------------------------------------------------------
+    |
+    | Security token for queue processing via HTTP endpoint on shared hosting.
+    | Set this in your production .env file.
+    |
+    */
+
+    'cron_token' => env('QUEUE_CRON_TOKEN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Connections
     |--------------------------------------------------------------------------
     |
@@ -27,6 +39,18 @@ return [
     | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
     |
     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cron Token for Shared Hosting
+    |--------------------------------------------------------------------------
+    |
+    | Security token for queue processing via HTTP endpoint on shared hosting.
+    | Set this in your production .env file.
+    |
+    */
+
+    'cron_token' => env('QUEUE_CRON_TOKEN'),
 
     'connections' => [
 

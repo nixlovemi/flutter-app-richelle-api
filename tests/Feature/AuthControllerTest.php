@@ -8,6 +8,7 @@ use App\Models\UserSocials;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 
 class AuthControllerTest extends TestCase
 {
@@ -484,5 +485,471 @@ class AuthControllerTest extends TestCase
 
         // Should still have only 1 social provider entry (no duplicates)
         $this->assertDatabaseCount('user_socials', 1);
+    }
+
+    // ==================== REGISTRATION TESTS ====================
+
+    /** @test */
+    public function test_user_registration_with_valid_data_creates_new_user()
+    {
+        $userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'StrongP@ssw0rd123',
+            'password_confirmation' => 'StrongP@ssw0rd123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $userData, $this->getApiHeaders());
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'body' => [
+                    'message',
+                    'user' => [
+                        'id', 'first_name', 'last_name', 'email', 'email_verified_at', 'created_at'
+                    ]
+                ]
+            ])
+            ->assertJson([
+                'success' => true,
+                'body' => [
+                    'user' => [
+                        'first_name' => 'John',
+                        'last_name' => 'Doe',
+                        'email' => 'john@example.com',
+                        'email_verified_at' => null, // Should be null initially
+                    ]
+                ]
+            ]);
+
+        // Verify user was created in database
+        $this->assertDatabaseHas('users', [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'email_verified_at' => null,
+        ]);
+
+        // Verify password was hashed
+        $user = User::where('email', 'john@example.com')->first();
+        $this->assertTrue(Hash::check('StrongP@ssw0rd123', $user->password));
+    }
+
+    /** @test */
+    public function test_user_registration_resends_verification_email_for_unverified_existing_user()
+    {
+        // Create an existing unverified user
+        $existingUser = User::factory()->create([
+            'first_name' => 'Old',
+            'last_name' => 'Name',
+            'email' => 'john@example.com',
+            'password' => Hash::make('old_password'),
+            'email_verified_at' => null, // Not verified
+        ]);
+
+        $userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'NewStrongP@ssw0rd123',
+            'password_confirmation' => 'NewStrongP@ssw0rd123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $userData, $this->getApiHeaders());
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'body' => [
+                    'user' => [
+                        'id' => $existingUser->id,
+                        'first_name' => 'John', // Should be updated
+                        'last_name' => 'Doe',   // Should be updated
+                        'email' => 'john@example.com',
+                        'email_verified_at' => null,
+                    ]
+                ]
+            ]);
+
+        // Verify user information was updated
+        $updatedUser = User::find($existingUser->id);
+        $this->assertEquals('John', $updatedUser->first_name);
+        $this->assertEquals('Doe', $updatedUser->last_name);
+        $this->assertTrue(Hash::check('NewStrongP@ssw0rd123', $updatedUser->password));
+    }
+
+    /** @test */
+    public function test_user_registration_fails_for_verified_existing_user_with_password()
+    {
+        // Create an existing verified user with password
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('existing_password'),
+            'email_verified_at' => now(), // Already verified
+        ]);
+
+        $userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'StrongP@ssw0rd123',
+            'password_confirmation' => 'StrongP@ssw0rd123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $userData, $this->getApiHeaders());
+
+        $response->assertStatus(400)
+            ->assertJson([
+                'success' => false,
+                'errors' => [
+                    'email' => [__('auth.email_already_registered')]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function test_user_registration_fails_for_google_login_user()
+    {
+        // Create a user that only has Google login (no password)
+        $user = User::factory()->create([
+            'email' => 'john@gmail.com',
+            'password' => null, // No password set
+            'email_verified_at' => now(), // Verified via Google
+        ]);
+
+        // Create Google social account for this user
+        UserSocials::factory()->create([
+            'user_id' => $user->id,
+            'provider' => 'google',
+            'provider_id' => 'google_123',
+        ]);
+
+        $userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@gmail.com',
+            'password' => 'StrongP@ssw0rd123',
+            'password_confirmation' => 'StrongP@ssw0rd123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $userData, $this->getApiHeaders());
+
+        $response->assertStatus(400)
+            ->assertJson([
+                'success' => false,
+                'errors' => [
+                    'email' => [__('auth.email_registered_via_google')]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function test_user_registration_validation_errors()
+    {
+        $testCases = [
+            // Missing required fields
+            [
+                'payload' => [],
+                'expected_errors' => ['first_name', 'last_name', 'email', 'password']
+            ],
+            // Invalid email
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'invalid-email',
+                    'password' => 'StrongP@ssw0rd123',
+                    'password_confirmation' => 'StrongP@ssw0rd123',
+                ],
+                'expected_errors' => ['email']
+            ],
+            // Password confirmation mismatch
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                    'password' => 'StrongP@ssw0rd123',
+                    'password_confirmation' => 'DifferentPassword',
+                ],
+                'expected_errors' => ['password']
+            ],
+            // Password too short
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                    'password' => 'Test1',
+                    'password_confirmation' => 'Test1',
+                ],
+                'expected_errors' => ['password']
+            ],
+            // Password without uppercase
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                    'password' => 'password123',
+                    'password_confirmation' => 'password123',
+                ],
+                'expected_errors' => ['password']
+            ],
+            // Password without lowercase
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                    'password' => 'PASSWORD123',
+                    'password_confirmation' => 'PASSWORD123',
+                ],
+                'expected_errors' => ['password']
+            ],
+            // Password without numbers
+            [
+                'payload' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                    'password' => 'StrongPassword',
+                    'password_confirmation' => 'StrongPassword',
+                ],
+                'expected_errors' => ['password']
+            ]
+        ];
+
+        foreach ($testCases as $testCase) {
+            $response = $this->postJson('/api/v1/auth/register', $testCase['payload'], $this->getApiHeaders());
+
+            $response->assertStatus(422);
+
+            foreach ($testCase['expected_errors'] as $field) {
+                $response->assertJsonValidationErrors($field);
+            }
+        }
+    }
+
+    /** @test */
+    public function test_user_registration_requires_api_key()
+    {
+        $userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'StrongP@ssw0rd123',
+            'password_confirmation' => 'StrongP@ssw0rd123',
+        ];
+
+        // Request without API key
+        $response = $this->postJson('/api/v1/auth/register', $userData, [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ]);
+
+        $response->assertStatus(401)
+            ->assertJson([
+                'success' => false,
+            ]);
+    }
+
+    // ==================== EMAIL VERIFICATION TESTS ====================
+
+    /** @test */
+    public function test_email_verification_notice_for_unverified_user()
+    {
+        $user = User::factory()->create([
+            'email' => 'unverified@example.com',
+            'email_verified_at' => null, // Not verified
+        ]);
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $response = $this->getJson('/api/v1/auth/email/verification-notice', [
+            'Authorization' => 'Bearer ' . $token,
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'body' => [
+                    'user' => [
+                        'email' => 'unverified@example.com',
+                        'email_verified_at' => null,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function test_email_verification_notice_for_verified_user()
+    {
+        $user = User::factory()->create([
+            'email' => 'verified@example.com',
+            'email_verified_at' => now(), // Already verified
+        ]);
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $response = $this->getJson('/api/v1/auth/email/verification-notice', [
+            'Authorization' => 'Bearer ' . $token,
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+            ]);
+    }
+
+    /** @test */
+    public function test_email_verification_resend_for_unverified_user()
+    {
+        $user = User::factory()->create([
+            'email' => 'unverified@example.com',
+            'email_verified_at' => null, // Not verified
+        ]);
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $response = $this->postJson('/api/v1/auth/email/verification-resend', [], [
+            'Authorization' => 'Bearer ' . $token,
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+            ]);
+    }
+
+    /** @test */
+    public function test_email_verification_resend_fails_for_verified_user()
+    {
+        $user = User::factory()->create([
+            'email' => 'verified@example.com',
+            'email_verified_at' => now(), // Already verified
+        ]);
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $response = $this->postJson('/api/v1/auth/email/verification-resend', [], [
+            'Authorization' => 'Bearer ' . $token,
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson([
+                'success' => false,
+            ]);
+    }
+
+    /** @test */
+    public function test_email_verification_notice_without_auth_requires_email()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->getJson('/api/v1/auth/email/check-status?email=test@example.com', [
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'body' => [
+                    'user' => [
+                        'email' => 'test@example.com',
+                        'email_verified_at' => null,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function test_email_verification_resend_without_auth_requires_email()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->postJson('/api/v1/auth/email/request-verification', [
+            'email' => 'test@example.com'
+        ], [
+            'API_KEY' => 'test_api_key_123',
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+            ]);
+    }
+
+    /** @test */
+    public function test_web_email_verification_with_valid_link()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'email_verified_at' => null, // Not verified
+        ]);
+
+        // Generate the verification URL hash
+        $hash = sha1($user->getEmailForVerification());
+
+        // Create a properly signed URL
+        $url = URL::signedRoute('verification.verify', [
+            'id' => $user->id,
+            'hash' => $hash
+        ]);
+
+        $response = $this->get($url);
+
+        $response->assertStatus(200)
+            ->assertViewIs('email-verification-result')
+            ->assertViewHas('success', true);
+
+        // Verify the user's email is now verified
+        $this->assertNotNull($user->fresh()->email_verified_at);
+    }
+
+    /** @test */
+    public function test_web_email_verification_with_invalid_hash()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'email_verified_at' => null, // Not verified
+        ]);
+
+        // Use invalid hash but create signed URL (the hash verification will fail inside the route)
+        $invalidHash = 'invalid_hash_123';
+
+        // Create a signed URL with invalid hash (signature will be valid but hash won't match)
+        $url = URL::signedRoute('verification.verify', [
+            'id' => $user->id,
+            'hash' => $invalidHash
+        ]);
+
+        $response = $this->get($url);
+
+        $response->assertStatus(200)
+            ->assertViewIs('email-verification-result')
+            ->assertViewHas('success', false);
+
+        // Verify the user's email is still not verified
+        $this->assertNull($user->fresh()->email_verified_at);
     }
 }

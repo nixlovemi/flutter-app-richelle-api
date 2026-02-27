@@ -37,4 +37,29 @@ return [
     'token_invalid' => 'Token invalid or expired',
     'user_info_retrieved' => 'User information retrieved',
     'invalid_api_key' => 'Invalid or missing API key',
+
+    // Registration Messages
+    'registration_successful' => 'Registration successful! Please check your email to verify your account.',
+    'user_already_exists_verified' => 'An account with this email address already exists and is verified.',
+    'user_exists_google_login' => 'This email is associated with a Google account. Please sign in with Google.',
+    'email_already_registered' => 'This email address is already registered.',
+    'email_registered_via_google' => 'This email address is registered via Google. Please use Google Sign-In.',
+    'verification_email_resent' => 'Verification email sent! Please check your email to verify your account.',
+    'check_email_for_verification' => 'Please check your email inbox and click the verification link to complete your registration.',
+
+    // Email Verification Messages
+    'email_verification_success' => 'Email verified successfully!',
+    'email_verified_message' => 'Your email has been verified and your account is now active.',
+    'email_already_verified' => 'Email already verified.',
+    'email_already_verified_message' => 'Your email address has already been verified.',
+    'email_verification_required' => 'Email verification required.',
+    'verification_email_sent' => 'A verification email has been sent to your email address.',
+
+    // Web-based email verification messages
+    'email_verification_title' => 'Email Verification',
+    'invalid_verification_link' => 'Invalid verification link.',
+    'invalid_verification_message' => 'This verification link is invalid or expired. Please request a new verification email.',
+    'close_window_instruction' => 'You can safely close this window.',
+    'email_already_verified_web_message' => 'Your email is already verified. You can close this window and return to the app.',
+    'email_verified_web_message' => 'Your email has been verified. You can close this window and return to the app.',
 ];

@@ -37,4 +37,29 @@ return [
     'token_invalid' => 'Token inválido ou expirado',
     'user_info_retrieved' => 'Informações do usuário recuperadas',
     'invalid_api_key' => 'Chave de API inválida ou ausente',
+
+    // Registration Messages
+    'registration_successful' => 'Registro realizado com sucesso! Verifique seu e-mail para verificar sua conta.',
+    'user_already_exists_verified' => 'Uma conta com este endereço de e-mail já existe e está verificada.',
+    'user_exists_google_login' => 'Este e-mail está associado a uma conta do Google. Faça login com o Google.',
+    'email_already_registered' => 'Este endereço de e-mail já está registrado.',
+    'email_registered_via_google' => 'Este endereço de e-mail está registrado via Google. Use o Login do Google.',
+    'verification_email_resent' => 'E-mail de verificação enviado! Verifique seu e-mail para verificar sua conta.',
+    'check_email_for_verification' => 'Verifique sua caixa de entrada de e-mail e clique no link de verificação para completar seu registro.',
+
+    // Email Verification Messages
+    'email_verification_success' => 'E-mail verificado com sucesso!',
+    'email_verified_message' => 'Seu e-mail foi verificado e sua conta está agora ativa.',
+    'email_already_verified' => 'E-mail já verificado.',
+    'email_already_verified_message' => 'Seu endereço de e-mail já foi verificado.',
+    'email_verification_required' => 'Verificação de e-mail necessária.',
+    'verification_email_sent' => 'Um e-mail de verificação foi enviado para seu endereço de e-mail.',
+
+    // Web-based email verification messages
+    'email_verification_title' => 'Verificação de Email',
+    'invalid_verification_link' => 'Link de verificação inválido.',
+    'invalid_verification_message' => 'Este link de verificação é inválido ou expirado. Por favor, solicite um novo email de verificação.',
+    'close_window_instruction' => 'Você pode fechar esta janela com segurança.',
+    'email_already_verified_web_message' => 'Seu e-mail já está verificado. Você pode fechar esta janela e retornar ao aplicativo.',
+    'email_verified_web_message' => 'Seu e-mail foi verificado. Você pode fechar esta janela e retornar ao aplicativo.',
 ];
