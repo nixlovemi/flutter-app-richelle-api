@@ -28,3 +28,36 @@ Did you mean one of these?
 #3 C:/Users/nixlo/OneDrive/Documents/Projects/flutter-app-richelle-api/artisan(37): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
 #4 {main}
 "} 
+[2026-05-01 01:58:25] local.INFO: Starting user account deletion {"user_id":25,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 01:58:25] local.INFO: Personal access tokens deleted {"user_id":25,"tokens_deleted":1} 
+[2026-05-01 01:58:25] local.INFO: User account successfully deleted {"user_id":25,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:01:57] local.INFO: Queue processing completed {"output":"  2026-05-01 02:01:56 App\\Notifications\\CustomVerifyEmail .................................................... RUNNING
+
+  2026-05-01 02:01:57 App\\Notifications\\CustomVerifyEmail .............................................. 648.25ms DONE
+
+"} 
+[2026-05-01 02:02:02] local.INFO: Queue processing completed {"output":""} 
+[2026-05-01 02:02:39] local.INFO: Starting user account deletion {"user_id":26,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:02:39] local.INFO: Personal access tokens deleted {"user_id":26,"tokens_deleted":1} 
+[2026-05-01 02:02:39] local.INFO: User account successfully deleted {"user_id":26,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:07:21] local.INFO: Queue processing completed {"output":"  2026-05-01 02:07:21 App\\Notifications\\CustomVerifyEmail .................................................... RUNNING
+
+  2026-05-01 02:07:21 App\\Notifications\\CustomVerifyEmail .............................................. 503.90ms DONE
+
+"} 
+[2026-05-01 02:07:27] local.INFO: Queue processing completed {"output":""} 
+[2026-05-01 02:08:01] local.INFO: Queue processing completed {"output":""} 
+[2026-05-01 02:08:40] local.INFO: Starting user account deletion {"user_id":27,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:08:40] local.INFO: Personal access tokens deleted {"user_id":27,"tokens_deleted":1} 
+[2026-05-01 02:08:40] local.INFO: User account successfully deleted {"user_id":27,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:10:15] local.INFO: Queue processing completed {"output":"  2026-05-01 02:10:14 App\\Notifications\\CustomVerifyEmail .................................................... RUNNING
+
+  2026-05-01 02:10:15 App\\Notifications\\CustomVerifyEmail .............................................. 585.27ms DONE
+
+"} 
+[2026-05-01 02:10:50] local.INFO: Starting user account deletion {"user_id":28,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:10:50] local.INFO: Personal access tokens deleted {"user_id":28,"tokens_deleted":1} 
+[2026-05-01 02:10:50] local.INFO: User account successfully deleted {"user_id":28,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:11:14] local.INFO: Starting user account deletion {"user_id":29,"email":"nixlovemi@gmail.com"} 
+[2026-05-01 02:11:14] local.INFO: Personal access tokens deleted {"user_id":29,"tokens_deleted":1} 
+[2026-05-01 02:11:14] local.INFO: User account successfully deleted {"user_id":29,"email":"nixlovemi@gmail.com"} 

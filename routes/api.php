@@ -26,12 +26,12 @@ Route::get('/health', function () {
     ]);
 });
 
-// Queue processing for shared hosting (no middleware for cron access)
-Route::post('/queue/process', [QueueController::class, 'processJobs'])
-    ->name('queue.process');
-
 Route::middleware('api.key')->group(function () {
     Route::prefix('v1')->group(function () {
+        // Queue processing for shared hosting (no middleware for cron access)
+        Route::post('/queue/process', [QueueController::class, 'processJobs'])
+            ->name('queue.process');
+
         Route::prefix('auth')->group(function () {
             Route::post('/login', [AuthController::class, 'login'])
                 ->middleware(['throttle:6,1']);
@@ -62,6 +62,8 @@ Route::middleware('api.key')->group(function () {
             Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/update-profile', [UserController::class, 'updateProfile'])
                     ->middleware(['throttle:6,1']);
+                Route::delete('/delete-account', [UserController::class, 'deleteAccount'])
+                    ->middleware(['throttle:3,1']); // More restrictive throttling for deletion
             });
         });
 

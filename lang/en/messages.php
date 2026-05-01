@@ -18,6 +18,21 @@ return [
     'created_at' => 'Created at',
     'updated_at' => 'Updated at',
     'updated_success' => ':attribute updated successfully!',
+    'update_failed' => 'Failed to update :attribute. Please try again.',
+
+    // Authentication and authorization
+    'token_required' => 'Authentication token is required.',
+    'invalid_token' => 'Invalid or expired authentication token.',
+    'user_not_found' => 'User not found.',
+
+    // Account deletion
+    'account_deleted_successfully' => 'Your account has been permanently deleted.',
+    'account_deletion_failed' => 'Failed to delete your account. Please try again or contact support.',
+    'account_deletion_must_be_confirmed' => 'You must confirm that you want to permanently delete your account.',
+
+    // Field names for validation
+    'password' => 'password',
+    'confirmation' => 'confirmation',
 
     'social' => [
         'facebook' => 'Facebook',
@@ -28,5 +43,13 @@ return [
         'user' => [
             'name' => 'User',
         ],
+    ],
+
+    'validation' => [
+        'required' => 'The :attribute field is required.',
+        'min' => [
+            'string' => 'The :attribute must be at least :min characters.',
+        ],
+        'password_incorrect' => 'The provided password is incorrect.',
     ],
 ];

@@ -20,6 +20,7 @@ class AuthControllerTest extends TestCase
 
         // Set API key for testing
         config(['app.api_key' => 'test_api_key_123']);
+        config(['services.google.mock_verify_payload' => null]);
     }
 
     protected function getApiHeaders(): array
@@ -44,12 +45,7 @@ class AuthControllerTest extends TestCase
             'family_name' => 'Doe',
         ];
 
-        Http::fake([
-            'https://oauth2.googleapis.com/tokeninfo*' => Http::response(
-                $userData ?? $defaultUserData,
-                200
-            )
-        ]);
+        config(['services.google.mock_verify_payload' => $userData ?? $defaultUserData]);
     }
 
     /**
@@ -78,12 +74,14 @@ class AuthControllerTest extends TestCase
      */
     protected function mockFailedTokenValidation(string $provider = 'google'): void
     {
-        $url = $provider === 'google'
-            ? 'https://oauth2.googleapis.com/tokeninfo*'
-            : 'https://graph.facebook.com/me*';
+        if ($provider === 'google') {
+            config(['services.google.mock_verify_payload' => false]);
+
+            return;
+        }
 
         Http::fake([
-            $url => Http::response([], 400)
+            'https://graph.facebook.com/me*' => Http::response([], 400)
         ]);
     }
 
@@ -649,6 +647,8 @@ class AuthControllerTest extends TestCase
     /** @test */
     public function test_user_registration_validation_errors()
     {
+        $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class);
+
         $testCases = [
             // Missing required fields
             [

@@ -190,7 +190,7 @@ class AuthController extends Controller
      */
     private function loginWithEmail(Request $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only(['email', 'password']);
 
         if (!Auth::attempt($credentials)) {
             return ApiResponse::unauthorized(
@@ -205,6 +205,15 @@ class AuthController extends Controller
         // Ensure user is properly loaded
         if (!$user) {
             return ApiResponse::serverError(__('auth.authentication_failed'));
+        }
+
+        // Check if user has verified their email
+        if (!$user->hasVerifiedEmail()) {
+            return ApiResponse::error(
+                __('auth.email_not_verified'),
+                ['email' => [__('auth.verify_email_before_login')]],
+                403
+            );
         }
 
         $token = $this->createNewToken($user);
@@ -303,6 +312,11 @@ class AuthController extends Controller
      */
     private function validateGoogleToken(string $idToken): ?array
     {
+        $testingOverride = $this->resolveGoogleTokenFromTestingConfig();
+        if ($testingOverride['has_override']) {
+            return $testingOverride['payload'];
+        }
+
         $client = new Google_Client([
             'client_id' => config('services.google.client_id')
         ]);
@@ -329,6 +343,56 @@ class AuthController extends Controller
             'first_name' => $payload['given_name'] ?? null,
             'last_name' => $payload['family_name'] ?? null,
             'picture' => $payload['picture'] ?? null,
+        ];
+    }
+
+    /**
+     * Resolve Google token payload override used only by automated tests.
+     *
+     * @return array{has_override: bool, payload: ?array}
+     */
+    private function resolveGoogleTokenFromTestingConfig(): array
+    {
+        if (!app()->environment('testing')) {
+            return [
+                'has_override' => false,
+                'payload' => null,
+            ];
+        }
+
+        $mockPayload = config('services.google.mock_verify_payload');
+
+        if ($mockPayload === false) {
+            return [
+                'has_override' => true,
+                'payload' => null,
+            ];
+        }
+
+        if (!is_array($mockPayload)) {
+            return [
+                'has_override' => false,
+                'payload' => null,
+            ];
+        }
+
+        if (!isset($mockPayload['sub'], $mockPayload['email'])) {
+            return [
+                'has_override' => true,
+                'payload' => null,
+            ];
+        }
+
+        return [
+            'has_override' => true,
+            'payload' => [
+                'id' => $mockPayload['sub'],
+                'email' => $mockPayload['email'],
+                'name' => $mockPayload['name'] ?? null,
+                'first_name' => $mockPayload['given_name'] ?? null,
+                'last_name' => $mockPayload['family_name'] ?? null,
+                'picture' => $mockPayload['picture'] ?? null,
+            ],
         ];
     }
 

@@ -18,6 +18,21 @@ return [
     'created_at' => 'Criado em',
     'updated_at' => 'Atualizado em',
     'updated_success' => ':attribute atualizado com sucesso!',
+    'update_failed' => 'Falha ao atualizar :attribute. Tente novamente.',
+
+    // Authentication and authorization
+    'token_required' => 'Token de autenticação é obrigatório.',
+    'invalid_token' => 'Token de autenticação inválido ou expirado.',
+    'user_not_found' => 'Usuário não encontrado.',
+
+    // Account deletion
+    'account_deleted_successfully' => 'Sua conta foi excluída permanentemente.',
+    'account_deletion_failed' => 'Falha ao excluir sua conta. Tente novamente ou entre em contato com o suporte.',
+    'account_deletion_must_be_confirmed' => 'Você deve confirmar que deseja excluir permanentemente sua conta.',
+
+    // Field names for validation
+    'password' => 'senha',
+    'confirmation' => 'confirmação',
 
     'social' => [
         'facebook' => 'Facebook',
@@ -28,5 +43,13 @@ return [
         'user' => [
             'name' => 'Usuário',
         ],
+    ],
+
+    'validation' => [
+        'required' => 'O campo :attribute é obrigatório.',
+        'min' => [
+            'string' => 'O campo :attribute deve ter pelo menos :min caracteres.',
+        ],
+        'password_incorrect' => 'A senha fornecida está incorreta.',
     ],
 ];

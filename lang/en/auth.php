@@ -54,6 +54,8 @@ return [
     'email_already_verified_message' => 'Your email address has already been verified.',
     'email_verification_required' => 'Email verification required.',
     'verification_email_sent' => 'A verification email has been sent to your email address.',
+    'email_not_verified' => 'Email not verified',
+    'verify_email_before_login' => 'Before logging in, confirm your email using the verification link sent to your inbox.',
 
     // Web-based email verification messages
     'email_verification_title' => 'Email Verification',

@@ -54,11 +54,13 @@ return [
     'email_already_verified_message' => 'Seu endereço de e-mail já foi verificado.',
     'email_verification_required' => 'Verificação de e-mail necessária.',
     'verification_email_sent' => 'Um e-mail de verificação foi enviado para seu endereço de e-mail.',
+    'email_not_verified' => 'E-mail não verificado',
+    'verify_email_before_login' => 'Antes de fazer login, confirme seu e-mail pelo link de verificação enviado para sua caixa de entrada.',
 
     // Web-based email verification messages
     'email_verification_title' => 'Verificação de Email',
     'invalid_verification_link' => 'Link de verificação inválido.',
-    'invalid_verification_message' => 'Este link de verificação é inválido ou expirado. Por favor, solicite um novo email de verificação.',
+    'invalid_verification_message' => 'Este link de verificação é inválido ou expirado. Por favor, solicite um novo e-mail de verificação.',
     'close_window_instruction' => 'Você pode fechar esta janela com segurança.',
     'email_already_verified_web_message' => 'Seu e-mail já está verificado. Você pode fechar esta janela e retornar ao aplicativo.',
     'email_verified_web_message' => 'Seu e-mail foi verificado. Você pode fechar esta janela e retornar ao aplicativo.',
